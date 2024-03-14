@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AB Testing Handin</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Julius+Sans+One&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Kaisei+Decol" rel='stylesheet'>
+</head>
+<body>
+    <header class="header" aria-label="Header">
+        <h1>Carlos Betancur A/B Testing Handin</h1>
+    </header>
+
+    <div class="overview">
+        <h1>Overview: Digital Clinic A/B Testing</h1>
+        <p>Below are two versions of a Digital Clinic prototype in which users can log-in to view medical information, financial 
+            reports, and schedule appointments among other tasks one would normally perform at an actual clinic. For the purpose of this 
+            study, users of the site were tasked with scheduling an appointment with Adam Ng, MD at Morristown Medical Center on April 23, 2024.
+        </p>
+        <div class="UI-images">
+            <div class="image-container">
+                <img src="assets/version-A.png" alt="Version A Screenshot">
+                <p class="caption">Version A User Interface</p>
+            </div>
+            <div class="image-container">
+                <img src="assets/version-B.png" alt="Version B Screenshot">
+                <p class="caption">Version B User Interface</p>
+            </div>
+        </div>
+
+        <p>Version B, displays a UI modification made to the original webpage, version A, intended to facilitate users' ability to schedule 
+            their respective appointments. A/B testing allows designers to observe users' behavioral response to UI changes before fully launching
+            them into production. This process helps idneitfy whether these modifications are effective in achieving the intended user response by monitoring
+            key performance indices. 
+        </p>
+    </div>
+
+    <div class="part-1">
+        <h1>Data Collection</h1>
+        <p> To observe behavior on either webpage, 31 users were assigned the task describe above and performed it on both the A and B versions. They first took turns
+            completing the task on single computer, then users walked around the room performing the tasks on each other's laptops and collecting data for their
+            own respective UI changes. The Following <a href="https://drive.google.com/file/d/1moE74CL-gxpeeasSSmwHYLLWiFaT17hI/view?usp=sharing">data points</a> were collected for each user session on my version B design
+            and compared to those from <a href="https://drive.google.com/file/d/1rBa3MVXeeD59lT4x1NPAoGa2IjrrRLrq/view?usp=sharing">version A</a>: 
+        </p>
+        <ul>
+            <li><strong>uid</strong> - Unique identifier for each user</li>
+            <li><strong>version</strong> - Version (A or B) of the website that the user interacted with</li>
+            <li><strong>timestamp_load</strong> - The time (in milliseconds) elapsed since the epoch</li>
+            <li><strong>time_on_page</strong> - Total time (in milliseconds) that the user spent on the page</li>
+            <li><strong>time_to_first_click</strong> - The time (in milliseconds) it took for the user to execute his/her first click</li>
+            <li><strong>mouse_move_distance</strong> - The total distance (in pixels) of the user’s mouse movements</li>
+            <li><strong>num_clicks</strong> - The number of times the user clicked on the screen</li>
+            <li><strong>did_misclick</strong> - A boolean flag indicating if the user pushed a button external to the task</li>
+            <li><strong>did_succeed</strong> - A boolean flag indicating if the user successfully completed the task</li>
+        </ul>
+    </div>
+
+    <div class="part-2">
+        <h1>Metric Optimization</h1>
+        <p>
+            The objective of the UI modifications in version B were to make the appointment scheduling practice easier for users. In order to
+            determine whether these changes were affected, performance metrics that quantify the user's ability to schedule the correct appointment. 
+            The following metrics were chosen to observe the length of the task, how error-prone users behaved, and how much effort was required for users
+            to navigate the UI correctly:
+
+        </p>
+        <ul>
+            <li><strong>time_on_page</strong></li>
+            <li><strong>did_misclick</strong></li>
+            <li><strong>mouse_move_distance</strong></li>
+        </ul>
+
+        <p>
+            The A/B tests will focus on these metrics as they best measure the user's successful completion of the assigned task. The 
+            mouse move distance in particular seeks to verify how logical the UI layout is and whether or not it is accessible. A short 
+            mouse movement distance will indicate less time spent "mindlessly" looking for the scheduling button and it also speaks to 
+            how accessible the new design is for users with limited mobility, who might often frequent a digital clinic. These were 
+            the values calculated for each metric and their respective versions, calculations for all test can be found 
+            <a href="https://docs.google.com/spreadsheets/d/1yoqdeURn-9urJYgYe28bDl_OoPUG11Ke3U9MYTYaYM0/edit?usp=sharing">here</a>: 
+        </p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Version A</th>
+                    <th>Version B</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>time_on_page (average)</strong></td>
+                    <td>12860.441</td>
+                    <td>8784.161</td>
+                </tr>
+                <tr>
+                    <td><strong>time_on_page (variance)</strong></td>
+                    <td>140609949</td>
+                    <td>22085283.74</td>
+                </tr>
+                <tr>
+                    <td><strong>did_misclick (percentage)</strong></td>
+                    <td>20.59</td>
+                    <td>12.90</td>
+                </tr>
+                <tr>
+                    <td><strong>mouse_move_distance (average)</strong></td>
+                    <td>4006.560</td>
+                    <td>2486.841</td>
+                </tr>
+                <tr>
+                    <td><strong>mouse_move_distance (variance)</strong></td>
+                    <td>6401849.352</td>
+                    <td>419752.7114</td>
+                </tr>
+
+            </tbody>
+        </table>
+        
+    </div>
+
+    <div class="part-3">
+        <h1>Statistical Testing</h1>
+        <p>Having collected the necessary data and identified the key performance metrics, the A/B testing now makes use of various statistical tests to 
+            evaluate the difference in data collected for each UI version. 
+        </p>
+        
+        <h2> Time Spent on Page One-Tailed T Test </h2>
+
+        <ul>
+            <li><strong>Null Hypothesis</strong> - There is no statistical difference between the amount of time spent on page A versus
+            page B.</li>
+            <li><strong>Alternative Hypothesis</strong> - The time spent on page B is statistically less than the time spent on page B. This is 
+            page B because the bright orange color will help users identify the button sooner.</li>
+            <li><strong>Predicted Result</strong> - considering the brighter color used on the button and the removal of the redundant "view
+                appointment" button, I think it makes sense that the null hypothesis will be rejected. Moreover, everyone in the studio used every other
+                students' computer, eventually they would have likely become quicker at completing the task regardless.</s></li>
+            <li><strong>Selected Test</strong> - One-Tailed T Test</li>
+        </ul>
+
+        <p>
+            When observing the different amount of time spent on either A or B, we hypothesize that the time spent on page B will be lower. Since a 
+            direction is assumed and we are comparing a variable in two different groups we will perform a one-tailed t-test (left-tailed t test). These 
+            were the results of the test:
+
+        </p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Degrees of Freedom</strong></td>
+                    <td>43.915</td>
+                </tr>
+                <tr>
+                    <td><strong>T-score</strong></td>
+                    <td>-1.851</td>
+                </tr>
+                <tr>
+                    <td><strong>P-value</strong></td>
+                    <td>0.035</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>
+            <strong>Summary: </strong>
+            The one-tailed t-test comparing the time spent on page between version A and version B yielded a t-score of -1.851 with 
+            approximately 43.915 degrees of freedom and a corresponding p-value of 0.035. With a significance level set at 0.05, the 
+            p-value indicates that there is a statistically significant difference in the mean time spent on page between the two 
+            versions. Specifically, version B exhibited a significantly lower mean time spent on page compared to version A. This 
+            finding suggests that the modifications implemented in version B may have led to a more efficient user experience, potentially 
+            resulting in users spending less time on the page while achieving the same task completion rates. 
+        </p>
+
+        <h2> Misclicks Chi-Square Test </h2>
+
+        <ul>
+            <li><strong>Null Hypothesis</strong> - There is no statistical difference between the misclick frequency on page A and B.</li>
+            <li><strong>Alternative Hypothesis</strong> - There is a statistical difference between the misclick frequency on page A and B.</li>
+            <li><strong>Predicted Result</strong> - while the changes made to the UI in version B make the button more visible, the changes to 
+            the date and office location were fairly subtle. As a result, I do not blieve there will be much of a difference in the misclick rates
+            for either group.</s></li>
+            <li><strong>Selected Test</strong> - Chi-Square Test</li>
+        </ul>
+
+        <p> 
+            In this case, we are observing the rate of misclicks between users on page A and users on page B. Since we are analzying different
+            frequencies across groups, we will use a Chi-Square Test. These were the results of the test:
+
+        </p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Degrees of Freedom</strong></td>
+                    <td>1</td>
+                </tr>
+                <tr>
+                    <td><strong>Chi-Square</strong></td>
+                    <td>3.951</td>
+                </tr>
+                <tr>
+                    <td><strong>P-value</strong></td>
+                    <td>0.047</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>
+            <strong>Summary: </strong>The test results suggest a discrepency in misclick frequencies with a chi-square value of 3.951. The null hypothesis can be rejected
+            given the associated p-value of approximately 0.047. The p-value is only slightly below the significance level, thus weakly supporting the 
+            alternative hypothesis. These findings suggest that there are meaningful differences in user behavior or outcomes between version A and version B. This test does not however, suggest
+            whether UI B has a lower misclick rate. Given that Sample B's misclick rate was lower than Sample A's, we might be able to infer this is
+            the case with the support of the chi-square test's p-value. However, further analysis 
+            may be warranted to identify the features or design elements associated with the observed discrepancies.
+        </p>
+
+        <h2> Mouse Distance Two-Tailed T Test </h2>
+
+        <ul>
+            <li><strong>Null Hypothesis</strong> - There is no statistical difference between the mouse move distance on page A versus
+            page B.</li>
+            <li><strong>Alternative Hypothesis</strong> - The mouse move distance on page B is statistically lower than that on page A, because
+                the brighter button color will allow users to identify it sooner and they will spend less time searching the page with their mouse.</li>
+            <li><strong>Predicted Result</strong> - I think that the null hypothesis will be rejected, since users will be able to identify the buttons
+            sooner and as they continue to perform the same task they will be able to identify the correct appointment slot with less mouse movement.</s></li>
+            <li><strong>Selected Test</strong> - One-Tailed T Test </li>
+        </ul>
+
+        <table>
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Degrees of Freedom</strong></td>
+                    <td>37.702</td>
+                </tr>
+                <tr>
+                    <td><strong>T-score</strong></td>
+                    <td>-3.383</td>
+                </tr>
+                <tr>
+                    <td><strong>P-value</strong></td>
+                    <td>0.0008</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>
+            <strong>Summary: </strong> The results of the one-tailed t-test comparing the mouse move distance between sample A and 
+            sample B reveal a statistically significant difference. With a p-value of approximately 0.000842, which is below the 
+            significance level of 0.05, we reject the null hypothesis. This indicates that the mean mouse move distance for sample B 
+            is significantly lower than that for sample A. These findings are crucial in the context of A/B testing for the digital 
+            clinic site. A lower mouse move distance in sample B suggests that users interacting with this version exhibit more 
+            efficient navigation behavior, potentially indicating a more intuitive and user-friendly interface design. Therefore, 
+            implementing the modifications introduced in sample B may lead to improved user experience and engagement on the digital 
+            clinic site, ultimately contributing to the site's effectiveness in facilitating appointments and providing services to 
+            users.
+        </p>
+
+
+
+    </div>
+
+    <div class="testing-shortcomings"> 
+        <h1>Testing Shortcomings</h1>
+        <p>
+            In each of the tests conducted the null hypothesis was rejected in support of the alternative hypothesis. I think the data
+            was largely skewed by the data collection method. Overtime, I assume individuals became accustomed to the task and were able to
+            identify the appropriate button much quicker, regardless of any UI changes. 
+        </p>
+        <p>
+            I think this was seen most evidently in the weak p-value found in the Misclick Chi-Square test. Nonetheless, more A/B testing and
+            larger data samples are likely necessary in order to effectively draw conclusions from version B's performance versus version A. 
+        </p>
+
+    </div>
+    
+</body>
+</html>
